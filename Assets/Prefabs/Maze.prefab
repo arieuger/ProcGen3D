@@ -73,4 +73,5 @@ MonoBehaviour:
     wallMaterial: {fileID: 2100000, guid: dbeafd0d3ca7f1866973d832f1d4170f, type: 2}
   doorPrefab: {fileID: 7678504593888584972, guid: 1d3a4fff781d44d75948f050375a419f,
     type: 3}
+  assimilateRooms: 1
   doorProbability: 0.1

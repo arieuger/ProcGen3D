@@ -11,6 +11,7 @@ public class Maze : MonoBehaviour
     public MazeWall[] wallPrefabs;
     public MazeRoomSettings[] roomSetings;
     public MazeDoor doorPrefab;
+    public bool assimilateRooms = true;
     
     [Range(0f, 1f)]
     public float doorProbability;
@@ -86,6 +87,10 @@ public class Maze : MonoBehaviour
                 CreatePassage(currentCell, neighbor, direction);
                 activeCells.Add(neighbor);
             }
+            else if ((assimilateRooms && currentCell.room.settingsIndex == neighbor.room.settingsIndex) || (!assimilateRooms && currentCell.room == neighbor.room))
+            {
+                CreatePassageInSameRoom(currentCell, neighbor, direction);
+            }
             else
             {
                 CreateWall(currentCell, neighbor, direction);
@@ -94,6 +99,21 @@ public class Maze : MonoBehaviour
         else
         {
             CreateWall(currentCell, null, direction);
+        }
+    }
+
+    private void CreatePassageInSameRoom(MazeCell cell, MazeCell otherCell, MazeDirection direction)
+    {
+        MazePassage passage = Instantiate(passagePrefab);
+        passage.Initialize(cell, otherCell, direction);
+        passage = Instantiate(passagePrefab);
+        passage.Initialize(otherCell, cell, direction.GetOpposite());
+        if (assimilateRooms && cell.room != otherCell.room)
+        {
+            MazeRoom roomToAssimilate = otherCell.room;
+            cell.room.Assimilate(roomToAssimilate);
+            rooms.Remove(roomToAssimilate);
+            Destroy(roomToAssimilate);
         }
     }
 
